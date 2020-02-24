@@ -1,4 +1,4 @@
-package com.example.barappkotlin
+package com.example.barappkotlin.view
 
 
 import android.os.Bundle
@@ -6,19 +6,24 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_one.*
+import com.example.barappkotlin.R
+import kotlinx.android.synthetic.main.fragment_bar.*
 
 class BarFragment : Fragment() {
+
+    companion object {
+        fun newInstance() = BarFragment()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_one, container, false)
+        return inflater.inflate(R.layout.fragment_bar, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        tv_fragment_one.text = "Bar Tab"
+        tv_fragment_bar.text = "Bar Tab"
     }
 
 }

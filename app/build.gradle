@@ -7,6 +7,9 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
+    dataBinding {
+        enabled = true
+    }
     defaultConfig {
         applicationId "com.example.barappkotlin"
         minSdkVersion 15
@@ -36,4 +39,15 @@ dependencies {
 
     implementation 'com.android.support:design:29.1.0'
     implementation 'com.android.support:support-v4:29.1.0'
+
+    implementation "com.android.support:cardview-v7:29.0.0"
+    implementation 'com.android.support:recyclerview-v7:29.0.0'
+
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    implementation 'com.google.android.gms:play-services-maps:16.0.0'
+    implementation 'com.google.android.gms:play-services-gcm:15.0.1'
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
+
+    implementation("com.squareup.okhttp3:logging-interceptor:4.4.0")
 }
