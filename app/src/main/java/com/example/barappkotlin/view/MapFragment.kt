@@ -3,6 +3,9 @@ package com.example.barappkotlin.view
 
 import android.location.Location
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.ViewModelProviders
 import com.example.barappkotlin.MapViewModel
@@ -31,6 +34,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
         map_view.onCreate(savedInstanceState)
         map_view.onResume()
         map_view.getMapAsync(this)
+        setHasOptionsMenu(true)
         return view
     }
 
@@ -55,6 +59,31 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     override fun onUserLocationChanged(location: Location?, bars: List<BarModel?>?) {
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.normal_map -> {
+            googleMap.mapType = GoogleMap.MAP_TYPE_NORMAL
+            true
+        }
+        R.id.hybrid_map -> {
+            googleMap.mapType = GoogleMap.MAP_TYPE_HYBRID
+            true
+        }
+        R.id.satellite_map -> {
+            googleMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
+            true
+        }
+        R.id.terrain_map -> {
+            googleMap.mapType = GoogleMap.MAP_TYPE_TERRAIN
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater?.inflate(R.menu.map_options, menu)
     }
 
 }
