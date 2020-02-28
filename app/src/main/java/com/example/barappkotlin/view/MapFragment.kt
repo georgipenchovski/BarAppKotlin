@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.barappkotlin.MapViewModel
 import com.example.barappkotlin.R
@@ -15,6 +16,7 @@ import com.example.barappkotlin.view.base.BaseFragment
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.fragment_map.*
@@ -41,7 +43,17 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
-        // TODO: Use the ViewModel
+        viewModel.onBarsLoadedEvent.observe(viewLifecycleOwner, Observer {
+            for (bar in it) {
+                val markerOptions = MarkerOptions()
+                val latLng = LatLng(bar.geometry.location.lat, bar.geometry.location.lng)
+                markerOptions.position(latLng)
+                markerOptions.title(bar.name)
+                markerOptions.snippet(bar.vicinity)
+                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                googleMap.addMarker(markerOptions)
+            }
+        })
     }
 
     override fun onMapReady(map: GoogleMap?) {
@@ -55,10 +67,14 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
         val homeLatLng = LatLng(latitude, longitude)
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(homeLatLng, zoomLevel))
         googleMap.addMarker(MarkerOptions().position(homeLatLng))
+
+        viewModel.loadBars(latitude,longitude)
+
 //            onUserLocationChanged(userLocation, bars)
     }
 
     override fun onUserLocationChanged(location: Location?, bars: List<BarModel?>?) {
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {

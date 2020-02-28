@@ -15,6 +15,7 @@ class RecyclerViewAdapter(private val context: Context) :
     RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder>() {
     private var barList: List<BarItem> = ArrayList()
     private var clickListener: ItemClickListener? = null
+
     fun setBars(barList: List<BarItem>) {
         this.barList = barList
         notifyDataSetChanged()
@@ -34,9 +35,9 @@ class RecyclerViewAdapter(private val context: Context) :
         position: Int
     ) {
         val bar = barList[position]
-        holder.barName.text = barList[position].getName()
+        holder.barName.text = barList[position].name
         holder.barDistance.text =
-            Math.round(barList[position].getDistance()).toString() + holder.meters
+            Math.round(barList[position].distance).toString() + holder.meters
         holder.cardView.setOnClickListener { clickListener!!.onItemClick(bar) }
     }
 

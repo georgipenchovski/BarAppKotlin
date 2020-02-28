@@ -3,27 +3,12 @@ package com.example.barappkotlin.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class LocationModel {
+data class LocationModel(
     @SerializedName("lat")
     @Expose
-    private var lat: Double? = null
+    var lat: Double,
     @SerializedName("lng")
     @Expose
-    private var lng: Double? = null
+    var lng: Double
+)
 
-    fun getLat(): Double? {
-        return lat
-    }
-
-    fun setLat(lat: Double?) {
-        this.lat = lat
-    }
-
-    fun getLng(): Double? {
-        return lng
-    }
-
-    fun setLng(lng: Double?) {
-        this.lng = lng
-    }
-}
