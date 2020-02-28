@@ -8,14 +8,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.barappkotlin.model.BarModel
 
-abstract class BaseFragment: Fragment() {
+abstract class BaseFragment : Fragment() {
+
+    protected var rootView: View? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-      var view = inflater.inflate(getLayoutRes(), container, false)
-        return view
+        rootView = inflater.inflate(getLayoutRes(), container, false)
+        return rootView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -23,7 +25,7 @@ abstract class BaseFragment: Fragment() {
         onFragmentViewCreated(view, savedInstanceState)
     }
 
-    protected abstract fun getLayoutRes(): Int
+    abstract fun getLayoutRes(): Int
 
     protected abstract fun onFragmentViewCreated(
         view: View?,
@@ -31,7 +33,7 @@ abstract class BaseFragment: Fragment() {
     ): View?
 
     protected fun getLayoutView(): View? {
-        return view
+        return rootView
     }
 
     abstract fun onUserLocationChanged(

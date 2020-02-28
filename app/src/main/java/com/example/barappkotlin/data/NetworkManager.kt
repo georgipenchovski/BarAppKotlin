@@ -1,9 +1,12 @@
 package com.example.barappkotlin.data
 
 import com.example.barappkotlin.model.BarCollection
+import com.example.barappkotlin.model.BarModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -11,38 +14,48 @@ import retrofit2.http.Query
 
 object NetworkManager {
 
-    private val API_BASE_URL = "https://maps.googleapis.com/maps/"
+    const val BASE_URL = "https://maps.googleapis.com/maps/"
 
-    private var servicesApiInterface: ServicesApiInterface? = null
+    private const val RADIUS_NEARBY_BARS = 800
 
-    fun build(): ServicesApiInterface? {
-        var builder: Retrofit.Builder = Retrofit.Builder()
-            .baseUrl(API_BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+    val retrofitBuilder: Retrofit.Builder by lazy {
+        Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create())
+    }
 
-        var httpClient: OkHttpClient.Builder = OkHttpClient.Builder()
-        httpClient.addInterceptor(interceptor())
+    val apiService: ApiService by lazy {
+        retrofitBuilder.build().create(ApiService::class.java)
+    }
 
-        var retrofit: Retrofit = builder.client(httpClient.build()).build()
-        servicesApiInterface = retrofit.create(
-            ServicesApiInterface::class.java
+    fun getNearbyBars(
+        latitude: Double,
+        longtitude: Double,
+        dataListener: DataListener<List<BarModel>>
+    ) {
+        val call = apiService?.getNearbyPlaces(
+            "bar",
+            "$latitude,$longtitude", RADIUS_NEARBY_BARS
         )
 
-        return servicesApiInterface as ServicesApiInterface
-    }
+        call?.enqueue(object : Callback<BarCollection?> {
+            override fun onFailure(call: Call<BarCollection?>, t: Throwable) {
+                t.localizedMessage?.let {
+                    dataListener.onError(it)
+                }
+            }
 
-    private fun interceptor(): HttpLoggingInterceptor {
-        val httpLoggingInterceptor = HttpLoggingInterceptor()
-        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-        return httpLoggingInterceptor
-    }
+            override fun onResponse(
+                call: Call<BarCollection?>,
+                response: Response<BarCollection?>
+            ) {
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        it.getResults()?.let {
+                            dataListener.onData(it)
+                        }
+                    }
+                }
+            }
 
-    interface ServicesApiInterface {
-        @GET("api/place/nearbysearch/json?sensor=true&key=AIzaSyAgyZuAj_jhJTZa5-7umraXyz1sHRlhNXk")
-        fun getNearbyPlaces(
-            @Query("type") type: String?, @Query(
-                "location"
-            ) location: String?, @Query("radius") radius: Int
-        ): Call<BarCollection?>?
+        })
     }
 }

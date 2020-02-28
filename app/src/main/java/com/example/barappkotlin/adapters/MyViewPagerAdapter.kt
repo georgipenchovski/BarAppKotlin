@@ -1,4 +1,4 @@
-package com.example.barappkotlin
+package com.example.barappkotlin.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

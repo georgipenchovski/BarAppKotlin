@@ -1,29 +1,59 @@
 package com.example.barappkotlin.view
 
 
+import android.location.Location
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.barappkotlin.BarViewModel
 import com.example.barappkotlin.R
-import kotlinx.android.synthetic.main.fragment_bar.*
+import com.example.barappkotlin.adapters.RecyclerViewAdapter
+import com.example.barappkotlin.model.BarItem
+import com.example.barappkotlin.model.BarModel
+import com.example.barappkotlin.view.base.BaseFragment
 
-class BarFragment : Fragment() {
+class BarFragment : BaseFragment(), RecyclerViewAdapter.ItemClickListener {
 
-    companion object {
-        fun newInstance() = BarFragment()
+
+    private lateinit var viewModel: BarViewModel
+    private lateinit var adapter: RecyclerViewAdapter
+    private var isUiInitiated = false
+    private val userLocation: Location? = null
+    private val bars: List<BarModel>? = null
+
+    override fun getLayoutRes(): Int {
+        return R.layout.fragment_bar
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_bar, container, false)
+    override fun onFragmentViewCreated(view: View?, savedInstanceState: Bundle?): View? {
+        bindElements()
+        return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        tv_fragment_bar.text = "Bar Tab"
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProviders.of(this).get(BarViewModel::class.java)
+        // TODO: Use the ViewModel
+    }
+
+    override fun onUserLocationChanged(location: Location?, bars: List<BarModel?>?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    private fun bindElements() {
+        val myRecyclerView: RecyclerView = getLayoutView()!!.findViewById(R.id.recycler_view)
+        adapter = context?.let { RecyclerViewAdapter(it) }!!
+        myRecyclerView.layoutManager = LinearLayoutManager(activity)
+        myRecyclerView.adapter = adapter
+        adapter!!.setClickListener(this)
+        isUiInitiated = true
+//        onUserLocationChanged(userLocation, bars)
+    }
+
+    override fun onItemClick(bar: BarItem?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 }

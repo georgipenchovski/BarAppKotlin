@@ -1,6 +1,6 @@
 package com.example.barappkotlin.data
 
-interface OperationCallback<T> {
-    fun onSuccess(data:List<T>?)
+interface DataListener<T> {
+    fun onData(data:T)
     fun onError(error:String?)
 }
