@@ -1,4 +1,4 @@
-package com.example.barappkotlin
+package com.example.barappkotlin.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

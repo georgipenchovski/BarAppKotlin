@@ -26,7 +26,7 @@ class RecyclerViewAdapter(private val context: Context) :
         viewType: Int
     ): MyViewHolder {
         val v =
-            LayoutInflater.from(context).inflate(R.layout.bar_item, parent, false)
+            LayoutInflater.from(context).inflate(R.layout.item_bar, parent, false)
         return MyViewHolder(v)
     }
 
@@ -36,8 +36,8 @@ class RecyclerViewAdapter(private val context: Context) :
     ) {
         val bar = barList[position]
         holder.barName.text = barList[position].name
-        holder.barDistance.text =
-            Math.round(barList[position].distance).toString() + holder.meters
+//        holder.barDistance.text =
+//            Math.round(barList[position].distance).toString() + holder.meters
         holder.cardView.setOnClickListener { clickListener!!.onItemClick(bar) }
     }
 

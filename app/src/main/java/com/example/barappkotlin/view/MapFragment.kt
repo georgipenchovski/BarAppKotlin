@@ -1,7 +1,6 @@
 package com.example.barappkotlin.view
 
 
-import android.location.Location
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -9,10 +8,9 @@ import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.example.barappkotlin.MapViewModel
 import com.example.barappkotlin.R
-import com.example.barappkotlin.model.BarModel
 import com.example.barappkotlin.view.base.BaseFragment
+import com.example.barappkotlin.viewmodel.MapViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -24,8 +22,6 @@ import kotlinx.android.synthetic.main.fragment_map.*
 class MapFragment : BaseFragment(), OnMapReadyCallback {
     lateinit var googleMap: GoogleMap
     private var isUiInitiated = false
-    private val userLocation: Location? = null
-    private val bars: List<BarModel>? = null
     private lateinit var viewModel: MapViewModel
 
     override fun getLayoutRes(): Int {
@@ -36,12 +32,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
         map_view.onCreate(savedInstanceState)
         map_view.onResume()
         map_view.getMapAsync(this)
-        setHasOptionsMenu(true)
-        return view
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
         viewModel.onBarsLoadedEvent.observe(viewLifecycleOwner, Observer {
             for (bar in it) {
@@ -54,12 +45,15 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
                 googleMap.addMarker(markerOptions)
             }
         })
+        setHasOptionsMenu(true)
+        return view
     }
 
     override fun onMapReady(map: GoogleMap?) {
-        googleMap = map!!
 
-        //These coordinates represent the latitude and longitude of the Googleplex.
+        googleMap = map!!
+        isUiInitiated = true
+        //These coordinates represent the latitude and longitude of the Appolica.
         val latitude = 42.6679
         val longitude = 23.2917
         val zoomLevel = 15f
@@ -68,13 +62,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(homeLatLng, zoomLevel))
         googleMap.addMarker(MarkerOptions().position(homeLatLng))
 
-        viewModel.loadBars(latitude,longitude)
-
-//            onUserLocationChanged(userLocation, bars)
-    }
-
-    override fun onUserLocationChanged(location: Location?, bars: List<BarModel?>?) {
-
+        viewModel.loadBars(latitude, longitude)
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
@@ -99,8 +87,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater?.inflate(R.menu.map_options, menu)
+        inflater.inflate(R.menu.map_options, menu)
     }
-
 }
 
